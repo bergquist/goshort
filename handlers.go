@@ -15,7 +15,8 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func ResolveShortUrlHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello")
+	//fmt.Fprintf(w, "Hello")
+	http.Error(w, "url not found", http.StatusNotFound)
 }
 
 func AddUrlHandler(w http.ResponseWriter, r *http.Request) {

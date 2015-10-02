@@ -3,44 +3,45 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
 )
 
-type ShortCode struct {
-	fullurl   string
-	shortcode string
+func TestMissingShortUrl(t *testing.T) {
+	req, _ := http.NewRequest("GET", "http://goshort.com/asdf", nil)
+
+	w := httptest.NewRecorder()
+	ResolveShortUrlHandler(w, req)
+
+	if w.Code != 404 {
+		t.Error("Expected handler to return 404")
+	}
+
+	fmt.Printf("%d - %s \n", w.Code, w.Body.String())
 }
 
-type repo interface {
-	Lookup(w string)
+func TestExistnigShortUrl(t *testing.T) {
+	req, _ := http.NewRequest("GET", "http://goshort.com/asdf", nil)
+
+	w := httptest.NewRecorder()
+	ResolveShortUrlHandler(w, req)
+
+	if w.Code != 301 {
+		t.Error("Expected handler to return redirect to full url")
+	}
 }
 
-func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello")
-}
+func TestAddUrlHandler(t *testing.T) {
+	body := strings.NewReader("{\"url\": \"that\"}")
+	req, _ := http.NewRequest("POST", "http://goshort.com/asdf", body)
 
-func ResolveShortUrlHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello")
-}
+	w := httptest.NewRecorder()
+	AddUrlHandler(w, req)
 
-func AddUrlHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Added!")
-	/*
-		url := r.PostForm["url"]
+	if w.Code != 200 {
+		t.Error("Expected handler to return 200")
+	}
 
-		shorturl := "sss"
-
-		client := redis.NewClient(&redis.Options{
-			Addr:     "localhost:6379",
-			Password: "",
-			DB:       0,
-		})
-
-		err := client.Set(shorturl, url, 0).Err()
-
-		if err == nil {
-			fmt.Fprintf(w, "short url! %s", shorturl)
-		}
-
-		fmt.Fprintf(w, "Fail train!")
-	*/
+	fmt.Printf("%d - %s \n", w.Code, w.Body.String())
 }

@@ -21,12 +21,12 @@ func TestMissingShortUrl(t *testing.T) {
 }
 
 func TestExistnigShortUrl(t *testing.T) {
-	req, _ := http.NewRequest("GET", "http://goshort.com/asdf", nil)
+	req, _ := http.NewRequest("GET", "http://goshort.com/apa", nil)
 
 	w := httptest.NewRecorder()
 	ResolveShortUrlHandler(w, req)
 
-	if w.Code != 301 {
+	if w.Code != 302 {
 		t.Error("Expected handler to return redirect to full url")
 	}
 }

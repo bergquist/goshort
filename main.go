@@ -14,7 +14,8 @@ func main() {
 	r.HandleFunc("/create", AddUrlHandler).
 		Methods("POST")
 
-	r.HandleFunc("/{id}", ResolveShortUrlHandler)
+	r.HandleFunc("/{id}", ResolveShortUrlHandler).
+		Methods("GET")
 
 	http.Handle("/", r)
 

@@ -8,8 +8,12 @@ import (
 	"strings"
 )
 
-type create_short_code_post struct {
+type req_create_short_code_post struct {
 	Url string
+}
+
+type res_create_short_code struct {
+	ShortCode string
 }
 
 type resolve_short_code_get struct {
@@ -36,12 +40,16 @@ func ResolveShortUrlHandler(w http.ResponseWriter, r *http.Request) {
 func AddUrlHandler(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 
-	var t create_short_code_post
+	var t req_create_short_code_post
 	err := decoder.Decode(&t)
 
 	if err != nil {
 		panic(err)
 	}
 
-	fmt.Fprintf(w, "%s\r\n", t.Url)
+	shortCode := "apa"
+	client := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
+	client.Set(shortCode, t.Url, 0)
+
+	fmt.Fprintf(w, "{ \"shortcode\": \"%s\"} ", shortCode)
 }

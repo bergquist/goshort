@@ -1,0 +1,15 @@
+[run]
+init_cmds = [
+  ["go", "build", "-o", "./goshort"],
+    ["./goshort"]
+]
+watch_all = true
+watch_dirs = [
+    "$WORKDIR"
+]
+watch_exts = [".go", ".ini", ".toml", ".html"]
+build_delay = 1500
+cmds = [
+  ["go", "build", "-o", "./goshort"],
+    ["./goshort"]
+]

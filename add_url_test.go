@@ -16,7 +16,11 @@ func TestAddUrlHandler(t *testing.T) {
 	req, _ := http.NewRequest("POST", "http://goshort.com/create", body)
 
 	w := httptest.NewRecorder()
-	AddUrlHandler(w, req)
+
+	addurlHandler := AddUrlHandlerstruct{}
+	addurlHandler.client = redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
+
+	addurlHandler.Execute(w, req)
 
 	if w.Code != 200 {
 		t.Error("Expected handler to return 200")

@@ -13,7 +13,11 @@ type resolve_short_code_get struct {
 	ShortCode string
 }
 
-func ResolveShortUrlHandler(w http.ResponseWriter, r *http.Request) {
+type ResolveShortUrlHandlerstruct struct {
+	client *redis.Client
+}
+
+func (this ResolveShortUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) {
 	shortcode := strings.TrimLeft(r.URL.Path, "/")
 	client = redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
 

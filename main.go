@@ -13,14 +13,20 @@ func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", new(HomeHandlerstruct).Execute)
 
+	red := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
+
 	addurlHandler := AddUrlHandlerstruct{
-		client: redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0}),
+		client: red,
 	}
 
 	r.HandleFunc("/create", addurlHandler.Execute).
 		Methods("POST")
 
-	r.HandleFunc("/{id}", ResolveShortUrlHandler).
+	resolveHandler := ResolveShortUrlHandlerstruct{
+		client: red,
+	}
+
+	r.HandleFunc("/{id}", resolveHandler.Execute).
 		Methods("GET")
 
 	http.Handle("/", r)

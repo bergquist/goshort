@@ -2,11 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"gopkg.in/redis.v3"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"gopkg.in/redis.v3"
 )
 
 func TestAddUrlHandler(t *testing.T) {
@@ -32,8 +33,8 @@ func TestAddUrlHandler(t *testing.T) {
 	}
 
 	//verify that it exists in db
-	client := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
-	fullUrl, err := client.Get(res.ShortCode).Result()
+	client2 := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
+	fullUrl, err := client2.Get(res.ShortCode).Result()
 
 	if fullUrl != "http://www.grafana.com" {
 		t.Errorf("full url is not correct. Found %s", fullUrl)

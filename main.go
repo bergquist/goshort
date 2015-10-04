@@ -15,16 +15,12 @@ func main() {
 
 	red := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
 
-	addurlHandler := AddUrlHandlerstruct{
-		client: red,
-	}
+	addurlHandler := AddUrlHandlerstruct{client: red}
 
 	r.HandleFunc("/create", addurlHandler.Execute).
 		Methods("POST")
 
-	resolveHandler := ResolveShortUrlHandlerstruct{
-		client: red,
-	}
+	resolveHandler := ResolveShortUrlHandlerstruct{client: red}
 
 	r.HandleFunc("/{id}", resolveHandler.Execute).
 		Methods("GET")

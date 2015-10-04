@@ -11,14 +11,15 @@ import (
 )
 
 func TestAddUrlHandler(t *testing.T) {
+	red := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
+
 	//create request
 	body := strings.NewReader("{\"url\": \"http://www.grafana.com\"}")
 	req, _ := http.NewRequest("POST", "http://goshort.com/create", body)
 
 	w := httptest.NewRecorder()
 
-	addurlHandler := AddUrlHandlerstruct{}
-	addurlHandler.client = redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
+	addurlHandler := AddUrlHandlerstruct{client: red}
 
 	addurlHandler.Execute(w, req)
 
@@ -37,8 +38,7 @@ func TestAddUrlHandler(t *testing.T) {
 	}
 
 	//verify that it exists in db
-	client2 := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
-	fullUrl, err := client2.Get(res.ShortCode).Result()
+	fullUrl, err := red.Get(res.ShortCode).Result()
 
 	if fullUrl != "http://www.grafana.com" {
 		t.Errorf("full url is not correct. Found %s", fullUrl)

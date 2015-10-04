@@ -30,9 +30,10 @@ func (this AddUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) 
 		panic(err)
 	}
 
-	shortCode := "apa"
+	shortCode := res_create_short_code{"apa"}
 
-	this.client.Set(shortCode, t.Url, 0)
+	this.client.Set(shortCode.ShortCode, t.Url, 0)
 
-	fmt.Fprintf(w, "{ \"shortcode\": \"%s\"} ", shortCode)
+	j, _ := json.Marshal(shortCode)
+	fmt.Fprint(w, string(j))
 }

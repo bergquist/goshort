@@ -3,10 +3,13 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"gopkg.in/redis.v3"
 	"net/http"
 	"strings"
+
+	"gopkg.in/redis.v3"
 )
+
+var client *redis.Client
 
 type req_create_short_code_post struct {
 	Url string
@@ -26,7 +29,7 @@ func HomeHandler(w http.ResponseWriter, r *http.Request) {
 
 func ResolveShortUrlHandler(w http.ResponseWriter, r *http.Request) {
 	shortcode := strings.TrimLeft(r.URL.Path, "/")
-	client := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
+	client = redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
 
 	fullUrl, err := client.Get(shortcode).Result()
 
@@ -48,7 +51,7 @@ func AddUrlHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	shortCode := "apa"
-	client := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
+	client = redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
 	client.Set(shortCode, t.Url, 0)
 
 	fmt.Fprintf(w, "{ \"shortcode\": \"%s\"} ", shortCode)

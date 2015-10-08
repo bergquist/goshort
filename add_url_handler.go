@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-
-	"gopkg.in/redis.v3"
 )
 
 type req_create_short_code_post struct {
@@ -17,7 +15,7 @@ type res_create_short_code struct {
 }
 
 type AddUrlHandlerstruct struct {
-	client *redis.Client
+	client Database
 }
 
 func (this AddUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) {
@@ -32,7 +30,7 @@ func (this AddUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) 
 
 	shortCode := res_create_short_code{"apa"}
 
-	this.client.Set(shortCode.ShortCode, t.Url, 0)
+	this.client.Set(shortCode.ShortCode, []byte(t.Url))
 
 	j, _ := json.Marshal(shortCode)
 	fmt.Fprint(w, string(j))

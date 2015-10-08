@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"gopkg.in/redis.v3"
 )
 
 func TestMissingShortUrl(t *testing.T) {
@@ -13,7 +11,7 @@ func TestMissingShortUrl(t *testing.T) {
 
 	w := httptest.NewRecorder()
 	resolveHandler := ResolveShortUrlHandlerstruct{
-		client: redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0}),
+		client: NewFakeDatabase(),
 	}
 	resolveHandler.Execute(w, req)
 
@@ -26,8 +24,10 @@ func TestExistnigShortUrl(t *testing.T) {
 	req, _ := http.NewRequest("GET", "http://goshort.com/apa", nil)
 
 	w := httptest.NewRecorder()
+	db := NewFakeDatabase()
+	db.Set("apa", []byte("http://www.grafana.org"))
 	resolveHandler := ResolveShortUrlHandlerstruct{
-		client: redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0}),
+		client: db,
 	}
 	resolveHandler.Execute(w, req)
 

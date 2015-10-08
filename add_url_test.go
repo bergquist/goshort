@@ -6,12 +6,10 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-
-	"gopkg.in/redis.v3"
 )
 
 func TestAddUrlHandler(t *testing.T) {
-	red := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
+	fakedb := NewFakeDatabase()
 
 	//create request
 	body := strings.NewReader("{\"url\": \"http://www.grafana.com\"}")
@@ -19,7 +17,7 @@ func TestAddUrlHandler(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	addurlHandler := AddUrlHandlerstruct{client: red}
+	addurlHandler := AddUrlHandlerstruct{client: fakedb}
 
 	addurlHandler.Execute(w, req)
 
@@ -38,7 +36,7 @@ func TestAddUrlHandler(t *testing.T) {
 	}
 
 	//verify that it exists in db
-	fullUrl, err := red.Get(res.ShortCode).Result()
+	fullUrl, err := fakedb.Get(res.ShortCode)
 
 	if fullUrl != "http://www.grafana.com" {
 		t.Errorf("full url is not correct. Found %s", fullUrl)

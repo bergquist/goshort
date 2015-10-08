@@ -3,25 +3,19 @@ package main
 import (
 	"net/http"
 	"strings"
-
-	"gopkg.in/redis.v3"
 )
-
-var client *redis.Client
 
 type resolve_short_code_get struct {
 	ShortCode string
 }
 
 type ResolveShortUrlHandlerstruct struct {
-	client *redis.Client
+	client Database
 }
 
-func (this ResolveShortUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) {
+func (this *ResolveShortUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) {
 	shortcode := strings.TrimLeft(r.URL.Path, "/")
-	client = redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
-
-	fullUrl, err := client.Get(shortcode).Result()
+	fullUrl, err := this.client.Get(shortcode)
 
 	if err != nil || fullUrl == "" {
 		http.Error(w, "url not found", http.StatusNotFound)

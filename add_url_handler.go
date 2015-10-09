@@ -25,7 +25,7 @@ func (this AddUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) 
 	err := decoder.Decode(&t)
 
 	if err != nil {
-		panic(err)
+		panic(err) //this seems dramatic
 	}
 
 	shortCode := res_create_short_code{"apa"}

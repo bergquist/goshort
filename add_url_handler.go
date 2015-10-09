@@ -28,7 +28,8 @@ func (this AddUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) 
 		panic(err) //this seems dramatic
 	}
 
-	shortCode := res_create_short_code{"apa"}
+	code, _ := this.client.Incr("counter")
+	shortCode := res_create_short_code{string(code)}
 
 	this.client.Set(shortCode.ShortCode, []byte(t.Url))
 

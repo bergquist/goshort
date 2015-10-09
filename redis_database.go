@@ -5,6 +5,7 @@ import "gopkg.in/redis.v3"
 type Database interface {
 	Set(key string, value []byte) error
 	Get(key string) (string, error)
+	Incr(key string) (int64, error)
 }
 
 type RedisDatabase struct {
@@ -22,4 +23,8 @@ func (this *RedisDatabase) Set(key string, value []byte) error {
 	} else {
 		return nil
 	}
+}
+
+func (this *RedisDatabase) Incr(key string) (int64, error) {
+	return this.client.Incr(key).Result()
 }

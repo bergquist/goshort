@@ -18,6 +18,32 @@ func parse_result(r io.Reader) (res_create_short_code, error) {
 	return res, err
 }
 
+func TestUrlsShouldGetSameShortCode(t *testing.T) {
+	fakedb := NewFakeDatabase()
+
+	//create request
+	body := strings.NewReader("{\"url\": \"http://www.grafana.com\"}")
+	req, _ := http.NewRequest("POST", "http://goshort.com/create", body)
+
+	body2 := strings.NewReader("{\"url\": \"http://www.grafana.com\"}")
+	req2, _ := http.NewRequest("POST", "http://goshort.com/create", body2)
+
+	w := httptest.NewRecorder()
+	w2 := httptest.NewRecorder()
+
+	addurlHandler := AddUrlHandlerstruct{client: fakedb}
+
+	addurlHandler.Execute(w, req)
+	addurlHandler.Execute(w2, req2)
+
+	res1, _ := parse_result(w.Body)
+	res2, _ := parse_result(w2.Body)
+
+	if res1.ShortCode != res2.ShortCode {
+		t.Errorf("Same url should have the same shortcode. %s != %s", res1.ShortCode, res2.ShortCode)
+	}
+}
+
 func TestUrlsShouldNotGetSameShortCode(t *testing.T) {
 	fakedb := NewFakeDatabase()
 

@@ -70,6 +70,24 @@ func TestUrlsShouldNotGetSameShortCode(t *testing.T) {
 	}
 }
 
+func TestBrokenPostSouldNotPanic(t *testing.T) {
+	fakedb := NewFakeDatabase()
+
+	//create request
+	body := strings.NewReader("{\"u\": \"http://www.brkgrafana.com\"}")
+	req, _ := http.NewRequest("POST", "http://goshort.com/create", body)
+
+	w := httptest.NewRecorder()
+
+	addurlHandler := AddUrlHandlerstruct{client: fakedb}
+
+	addurlHandler.Execute(w, req)
+
+	if w.Code != 400 {
+		t.Error("invalid requests should fail")
+	}
+}
+
 func TestAddUrlHandler(t *testing.T) {
 	fakedb := NewFakeDatabase()
 

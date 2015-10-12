@@ -23,9 +23,9 @@ func (this AddUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) 
 
 	var t req_create_short_code_post
 	err := decoder.Decode(&t)
-
-	if err != nil {
-		panic(err) //this seems dramatic
+	if err != nil || t.Url == "" {
+		http.Error(w, "Invalid format", http.StatusBadRequest)
+		return
 	}
 
 	//have this url allready been shortened
@@ -37,11 +37,11 @@ func (this AddUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	code, _ := this.client.Incr("counter")
+	code, _ := this.client.Incr("counter") //get uniqe id
 	shortCode := res_create_short_code{string(code)}
 
-	this.client.Set(shortCode.ShortCode, []byte(t.Url))
-	this.client.Set(t.Url, []byte(shortCode.ShortCode))
+	this.client.Set(shortCode.ShortCode, []byte(t.Url)) //set shortcode to url map
+	this.client.Set(t.Url, []byte(shortCode.ShortCode)) //set url to shortcode map
 
 	j, _ := json.Marshal(shortCode)
 	fmt.Fprint(w, string(j))

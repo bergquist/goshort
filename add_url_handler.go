@@ -4,11 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-)
 
-type req_create_short_code_post struct {
-	Url string
-}
+	models "github.com/bergquist/goshort/models"
+)
 
 type res_create_short_code struct {
 	ShortCode string
@@ -21,7 +19,7 @@ type AddUrlHandlerstruct struct {
 func (this AddUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 
-	var t req_create_short_code_post
+	var t models.Req_create_short_code_post
 	err := decoder.Decode(&t)
 	if err != nil || t.Url == "" {
 		http.Error(w, "Invalid format", http.StatusBadRequest)

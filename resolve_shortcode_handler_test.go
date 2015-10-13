@@ -15,7 +15,7 @@ func TestMissingShortUrl(t *testing.T) {
 	Router(fakedb).ServeHTTP(w, req)
 
 	if w.Code != 404 {
-		t.Error("Expected handler to return 404")
+		t.Errorf("Expected handler to return 404 not %d", w.Code)
 	}
 }
 

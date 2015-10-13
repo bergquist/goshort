@@ -15,7 +15,7 @@ func TestHomeHandler(t *testing.T) {
 	Router(fakedb).ServeHTTP(w, req)
 
 	body := w.Body.String()
-	if body != "Hello" {
-		t.Errorf("Home handler should say Hello. %s", body)
+	if w.Code != 200 {
+		t.Errorf("Home handler should return 200. %s", body)
 	}
 }

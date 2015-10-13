@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
 )
 
@@ -9,5 +9,6 @@ type HomeHandlerstruct struct {
 }
 
 func (this HomeHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello")
+	t, _ := template.ParseFiles("home.html")
+	t.Execute(w, nil)
 }

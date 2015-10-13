@@ -1,6 +1,7 @@
 package main
 
 import (
+	"html/template"
 	"net/http"
 	"strings"
 )
@@ -14,7 +15,9 @@ func (this *ResolveShortUrlHandlerstruct) Execute(w http.ResponseWriter, r *http
 	fullUrl, err := this.client.Get(shortcode)
 
 	if err != nil || fullUrl == "" {
-		http.Error(w, "url not found", http.StatusNotFound)
+		w.WriteHeader(404)
+		t, _ := template.ParseFiles("home.html")
+		t.Execute(w, nil)
 	} else {
 		http.Redirect(w, r, fullUrl, http.StatusFound)
 	}

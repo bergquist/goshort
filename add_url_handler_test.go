@@ -7,12 +7,14 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	models "github.com/bergquist/goshort/models"
 )
 
-func parse_result(r io.Reader) (res_create_short_code, error) {
+func parse_result(r io.Reader) (models.Res_create_short_code, error) {
 	decoder := json.NewDecoder(r)
 
-	var res res_create_short_code
+	var res models.Res_create_short_code
 	err := decoder.Decode(&res)
 
 	return res, err

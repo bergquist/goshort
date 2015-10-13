@@ -8,10 +8,6 @@ import (
 	models "github.com/bergquist/goshort/models"
 )
 
-type res_create_short_code struct {
-	ShortCode string
-}
-
 type AddUrlHandlerstruct struct {
 	client Database
 }
@@ -29,14 +25,14 @@ func (this AddUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) 
 	//have this url allready been shortened
 	res, checkErr := this.client.Get(t.Url)
 	if checkErr == nil {
-		code := res_create_short_code{string(res)}
+		code := models.Res_create_short_code{string(res)}
 		resjson, _ := json.Marshal(code)
 		fmt.Fprint(w, string(resjson))
 		return
 	}
 
 	code, _ := this.client.Incr("counter") //get uniqe id
-	shortCode := res_create_short_code{string(code)}
+	shortCode := models.Res_create_short_code{string(code)}
 
 	this.client.Set(shortCode.ShortCode, []byte(t.Url)) //set shortcode to url map
 	this.client.Set(t.Url, []byte(shortCode.ShortCode)) //set url to shortcode map

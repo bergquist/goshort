@@ -5,10 +5,6 @@ import (
 	"strings"
 )
 
-type resolve_short_code_get struct {
-	ShortCode string
-}
-
 type ResolveShortUrlHandlerstruct struct {
 	client Database
 }

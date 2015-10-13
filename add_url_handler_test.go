@@ -31,10 +31,9 @@ func TestUrlsShouldGetSameShortCode(t *testing.T) {
 	w := httptest.NewRecorder()
 	w2 := httptest.NewRecorder()
 
-	addurlHandler := AddUrlHandlerstruct{client: fakedb}
-
-	addurlHandler.Execute(w, req)
-	addurlHandler.Execute(w2, req2)
+	router := Router(fakedb)
+	router.ServeHTTP(w, req)
+	router.ServeHTTP(w2, req2)
 
 	res1, _ := parse_result(w.Body)
 	res2, _ := parse_result(w2.Body)
@@ -54,13 +53,12 @@ func TestUrlsShouldNotGetSameShortCode(t *testing.T) {
 	body2 := strings.NewReader("{\"url\": \"http://www.grafana.org\"}")
 	req2, _ := http.NewRequest("POST", "http://goshort.com/create", body2)
 
+	router := Router(fakedb)
 	w := httptest.NewRecorder()
 	w2 := httptest.NewRecorder()
 
-	addurlHandler := AddUrlHandlerstruct{client: fakedb}
-
-	addurlHandler.Execute(w, req)
-	addurlHandler.Execute(w2, req2)
+	router.ServeHTTP(w, req)
+	router.ServeHTTP(w2, req2)
 
 	res1, _ := parse_result(w.Body)
 	res2, _ := parse_result(w2.Body)
@@ -78,10 +76,7 @@ func TestBrokenPostSouldNotPanic(t *testing.T) {
 	req, _ := http.NewRequest("POST", "http://goshort.com/create", body)
 
 	w := httptest.NewRecorder()
-
-	addurlHandler := AddUrlHandlerstruct{client: fakedb}
-
-	addurlHandler.Execute(w, req)
+	Router(fakedb).ServeHTTP(w, req)
 
 	if w.Code != 400 {
 		t.Error("invalid requests should fail")
@@ -97,9 +92,7 @@ func TestAddUrlHandler(t *testing.T) {
 
 	w := httptest.NewRecorder()
 
-	addurlHandler := AddUrlHandlerstruct{client: fakedb}
-
-	addurlHandler.Execute(w, req)
+	Router(fakedb).ServeHTTP(w, req)
 
 	if w.Code != 200 {
 		t.Error("Expected handler to return 200")

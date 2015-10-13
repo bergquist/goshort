@@ -9,14 +9,9 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func main() {
+func Router(db Database) *mux.Router {
 	r := mux.NewRouter()
 	r.HandleFunc("/", new(HomeHandlerstruct).Execute)
-
-	red := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
-	db := &RedisDatabase{
-		client: red,
-	}
 
 	addurlHandler := AddUrlHandlerstruct{client: db}
 
@@ -28,7 +23,16 @@ func main() {
 	r.HandleFunc("/{id}", resolveHandler.Execute).
 		Methods("GET")
 
-	http.Handle("/", r)
+	return r
+}
+
+func main() {
+	red := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379", Password: "", DB: 0})
+	db := &RedisDatabase{
+		client: red,
+	}
+
+	http.Handle("/", Router(db))
 
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

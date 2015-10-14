@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 
 	models "github.com/bergquist/goshort/models"
 )
@@ -31,8 +32,9 @@ func (this AddUrlHandlerstruct) Execute(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	code, _ := this.client.Incr("counter") //get uniqe id
-	shortCode := models.Res_create_short_code{string(code)}
+	inc, _ := this.client.Incr("counter")
+	code := strconv.FormatInt(inc, 10)
+	shortCode := models.Res_create_short_code{code}
 
 	this.client.Set(shortCode.ShortCode, []byte(t.Url)) //set shortcode to url map
 	this.client.Set(t.Url, []byte(shortCode.ShortCode)) //set url to shortcode map

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"log"
 	"net/http"
 
 	"gopkg.in/redis.v3"
@@ -23,6 +22,8 @@ func Router(db Database) *mux.Router {
 	r.HandleFunc("/{id}", resolveHandler.Execute).
 		Methods("GET")
 
+	r.PathPrefix("/").Handler(http.FileServer(http.Dir("./static/")))
+
 	return r
 }
 
@@ -33,6 +34,9 @@ func main() {
 	}
 
 	http.Handle("/", Router(db))
+	http.HandleFunc("/static/", func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, r.URL.Path[1:])
+	})
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	panic(http.ListenAndServe(":8080", nil))
 }

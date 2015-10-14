@@ -1,9 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="goshort">
 <head>
     <title>GO SHORT!</title>
 </head>
 <body>
-lets go short!
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.5/angular.min.js"></script>
+    <script type="text/javascript" src="/static/main.js"></script>
+
+    <div ng-controller="GoShortController as goshort">
+        <form ng-submit="goshort.shortenUrl()">
+            <label>Url: </label>
+            <input type="text" value="" ng-model="goshort.url">
+
+            <input class="btn-primary" value="Skapa kort url!" type="submit">
+        </form>
+
+        <div id="result">{{"{{"}}goshort.shortUrl{{"}}"}}</div>
+    </div>
+
+
 </body>
 </html>

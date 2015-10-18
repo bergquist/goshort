@@ -8,14 +8,13 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func StaticFileHandler(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, r.URL.Path[1:])
-}
-
 func Router(db Database) *mux.Router {
 	r := mux.NewRouter()
+
+	s := http.StripPrefix("/static/", http.FileServer(http.Dir("./static/")))
+	r.PathPrefix("/static/").Handler(s)
+
 	r.HandleFunc("/", new(HomeHandlerstruct).Execute)
-	r.HandleFunc("/static/", StaticFileHandler)
 
 	addurlHandler := AddUrlHandlerstruct{client: db}
 
